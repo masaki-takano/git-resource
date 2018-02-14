@@ -39,6 +39,14 @@ force=$(jq -r '.params.force // false' < $payload)
 only_tag=$(jq -r '.params.only_tag // false' < $payload)
 annotation_file=$(jq -r '.params.annotate // ""' < $payload)
 notes_file=$(jq -r '.params.notes // ""' < $payload)
+check_only=$(jq -r '.source.check_only // ""' < $payload)
+
+if [ "$check_only" = "true" ]; then
+  jq -n "{
+    version: {ref: \"none\"}
+  }" >&3
+  exit 0
+fi
 
 configure_git_global "${git_config_payload}"
 
